@@ -21,18 +21,18 @@ int main(int argc, char *argv[])
     switch (res)
     {
 	case 0:
-	    printf("WARNING: Wrong argument\n");
+	    printf("WARNING: Wrong argument. Default format: PPM\n");
 	    break;
 	case 1:
-	    printf("INFO: Choice_Format made for PPM\n");
+	    printf("INFO: Format chosen PPM\n");
 	    choice_format = 1;
 	    break;
 	case 2:
-	    printf("INFO: Choice_Format made for BMP\n");
+	    printf("INFO: Format chosen BMP\n");
 	    choice_format = 2;
 	    break;
 	default:
-	    printf("INFO: No choice_format made\n");
+	    printf("INFO: No format chosen. Default: PPM\n");
 	    break;
     }
 
@@ -41,18 +41,18 @@ int main(int argc, char *argv[])
     switch (res)
     {
 	case 0:
-	    printf("WARNING: Wrong argument\n");
+	    printf("WARNING: Wrong argument. Default program: 1\n");
 	    break;
 	case 1:
-	    printf("INFO: Choice_program made 1\n");
+	    printf("INFO: Program Chosen 1\n");
 	    choice_program = 1;
 	    break;
 	case 2:
-	    printf("INFO: Choice_program made 2\n");
+	    printf("INFO: Program Chosen 2\n");
 	    choice_program = 2;
 	    break;
 	default:
-	    printf("INFO: No choice_program made\n");
+	    printf("INFO: No format chosen. Default: 1\n");
 	    break;
     }
 

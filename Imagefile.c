@@ -112,7 +112,10 @@ void CreateImageBMP(const char *nFile, uint8_t ***color, uint32_t Width, uint32_
     uint32_t i, j;
     for (i = 0; i < Height; i++) {
 	for (j = 0; j < Width; j++) {
-	    fwrite(color[i][j], sizeof(uint8_t), 3, File);
+	    // fwrite(color[i][j], sizeof(uint8_t), 3, File);
+	    fputc(color[Height-i-1][j][2], File);
+	    fputc(color[Height-i-1][j][1], File);
+	    fputc(color[Height-i-1][j][0], File);
 	}
 	fwrite(padding, sizeof(uint8_t), ecart, File);
     }

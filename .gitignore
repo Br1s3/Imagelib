@@ -1,12 +1,9 @@
-
 *.o
 *.a
 *.so
 main
 stock
-
 Olivec_essai
-
 4P24B_old
 PPMformat
 BMPformat
