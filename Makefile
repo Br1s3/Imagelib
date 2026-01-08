@@ -1,5 +1,6 @@
 CC = gcc
 RM = rm -rf
+MD = mkdir -p
 
 CFLAGS +=	\
 -Wextra		\
@@ -9,6 +10,7 @@ CFLAGS +=	\
 PICT_DIR = stock
 PICT_SAMPLE = output_000.ppm
 PICT_NAME = output
+EXAMPLE_DIR = picture
 VIDEO_NAME = video.mp4
 EXEC = main
 
@@ -49,6 +51,12 @@ prog_static: main.c | libImagefile.a
 
 play_video: $(VIDEO_NAME)
 	mpv $(VIDEO_NAME) --loop-file=yes
+
+create_gif: $(VIDEO_NAME) | $(EXAMPLE_DIR)
+	ffmpeg -i $(VIDEO_NAME) -vf "fps=15,scale=500:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" $(EXAMPLE_DIR)/example.gif
+
+$(EXAMPLE_DIR):
+	$(MD) $(EXAMPLE_DIR)
 
 create_video: $(VIDEO_NAME)
 

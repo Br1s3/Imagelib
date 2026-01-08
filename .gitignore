@@ -1,6 +1,7 @@
 *.o
 *.a
 *.so
+*.mp4
 main
 stock
 Olivec_essai

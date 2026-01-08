@@ -42,3 +42,7 @@ $ mpv test.mp4 --loop-file=yes
 ```console
 $ make play_video
 ```
+
+## Example:
+
+[![Example](./picture/example.gif)](/picture)
