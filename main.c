@@ -1,7 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "Imagefile.h"
+
+#if defined(PROG1)
+#    define LIBIMAGEFILE_IMPLEMENTATION
+#    include "libImagefile.h"
+#elif defined(PROG2)
+#    include "libImagefile.h"
+#else
+#    include "Imagefile.h"
+#endif
+
 
 // #include <time.h>
 #define delta_rand 9999
