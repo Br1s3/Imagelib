@@ -2,7 +2,8 @@
 *.a
 *.so
 *.mp4
-main
+writeimage
+readimage
 stock
 Olivec_essai
 4P24B_old

@@ -1,13 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <string.h>
-#include <errno.h>
 
 #include "Imagefile.h"
 
-
-uint8_t ***color_alloc(int w, int h)
+uint8_t ***b24_color_alloc(int w, int h)
 {
     uint8_t ***color = (uint8_t ***)malloc(sizeof(uint8_t **)*h);
     for (int i = 0; i < h; i++) {
@@ -19,7 +16,7 @@ uint8_t ***color_alloc(int w, int h)
     return color;
 }
 
-int color_free(uint8_t ***tab, int w, int h)
+int b24_color_free(uint8_t ***tab, int w, int h)
 {
     if (tab == NULL) return -1;
     for (int i = 0; i < h; i++) {
@@ -32,7 +29,7 @@ int color_free(uint8_t ***tab, int w, int h)
     return 0;
 }
 
-void CreateImagePPM(const char *nFile, uint8_t ***color, uint32_t Width, uint32_t Height)
+void CreateImagePPM24b(const char *nFile, uint8_t ***color, uint32_t Width, uint32_t Height)
 {
     FILE *f = fopen(nFile, "wb");
     if (f == NULL) {
@@ -54,15 +51,14 @@ void CreateImagePPM(const char *nFile, uint8_t ***color, uint32_t Width, uint32_
     fclose(f);
 }
 
-
-void CreateImageBMP(const char *nFile, uint8_t ***color, uint32_t Width, uint32_t Height)
+void CreateImageBMP24b(const char *nFile, uint8_t ***color, uint32_t Width, uint32_t Height)
 {
     Signature *id = (Signature *)malloc(sizeof(Signature) + 1);
     BMPHeader *bmph = (BMPHeader *)malloc(sizeof(BMPHeader) + 1);
     DIBHeader *dibh = (DIBHeader *)malloc(sizeof(DIBHeader) + 1);
 
     if (!dibh || !bmph) {
-	fprintf(stderr, "Erreur : %s, ligne : %d\n", strerror(errno), __LINE__);
+	fprintf(stderr, "ERROR : Allocation of dibh or bmph");
 	exit(1);
     }
 
@@ -126,4 +122,112 @@ void CreateImageBMP(const char *nFile, uint8_t ***color, uint32_t Width, uint32_
     free(id);
     free(bmph);
     free(dibh);
+}
+
+
+uint8_t ***b8_color_alloc(int w, int h)
+{
+    uint8_t ***color = (uint8_t ***)malloc(sizeof(uint8_t **)*h);
+    for (int i = 0; i < h; i++) {
+    	color[i] = (uint8_t **)malloc(sizeof(uint8_t *)*w);
+    	for (int j = 0; j < w; j++) {
+    	    color[i][j] = (uint8_t *)malloc(sizeof(uint8_t));
+    	}
+    }
+    return color;
+}
+
+int b8_color_free(uint8_t ***tab, int w, int h)
+{
+    if (tab == NULL) return -1;
+    for (int i = 0; i < h; i++) {
+	for (int j = 0; j < w; j++) {
+	    free(tab[i][j]);
+	}
+	free(tab[i]);
+    }
+    free(tab);
+    return 0;
+}
+
+
+void CreateImagePPM8b(const char *nFile, uint8_t ***color, uint32_t Width, uint32_t Height)
+{
+    FILE *f = fopen(nFile, "wb");
+    if (f == NULL) {
+	fprintf(stderr, "ERROR: could not open file %s: %m\n", nFile);
+	exit(1);
+    }
+    
+    fprintf(f, "P5\n");
+    fprintf(f, "%d %d\n", Width, Height);
+    fprintf(f, "255\n");
+
+    for (uint32_t y = 0; y < Height; y++) {
+	for (uint32_t x = 0; x < Width; x++) {
+	    fputc(color[y][x][0], f);
+	}
+    }
+    fclose(f);
+}
+
+
+uint8_t ***ReadImage(const char *path, int *w, int *h, int *nb_color)
+{
+    FILE *f = fopen(path, "rb");
+    if (f == NULL) {
+	fprintf(stderr, "ERROR: To read the file: %s\n", path);
+	return NULL;
+    }
+
+    char P;
+    int signature;
+    fscanf(f, "%c%d\n", &P, &signature);
+    if (P != 'P') {
+	fprintf(stderr, "ERROR: Unkown format\n");
+	fclose(f);
+	return NULL;
+    }
+    
+    int f_width, f_height;
+    fscanf(f, "%d %d\n", &f_width, &f_height);
+    
+    char canva[3];
+    fscanf(f, "%s\n", canva);
+    // Debug
+    // printf("sig: P%d\nsize: %d %d\ncanva: %s\n", signature, f_width, f_height, canva);
+
+    (*w) = f_width;
+    (*h) = f_height;
+
+    uint8_t ***data = NULL;
+    if (signature == 6) {
+	*nb_color = 3;
+	data = b24_color_alloc(f_width, f_height);
+    }
+    else if (signature == 5) {
+	data = b8_color_alloc(f_width, f_height);
+	*nb_color = 1;
+    }
+    else {
+	fprintf(stderr, "ERROR: No readable format\n");
+	return NULL;
+    }
+
+    for (int i = 0; i < f_height; i++) {
+	for (int j = 0; j < f_width; j++) {
+	    for (int c = 0; c < *nb_color; c++) {
+		uint8_t row_data;
+		if (fread(&row_data, 1, sizeof(uint8_t), f) < 1) {
+		    fprintf(stderr, "ERROR: To read the f\n");
+		    fclose(f);
+		    return NULL;
+		}
+
+		data[i][j][c] = row_data;
+	    }
+	}
+    }
+    fclose(f);
+    return data;
 }
