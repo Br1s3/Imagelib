@@ -13,76 +13,80 @@ PICT_NAME = output
 EXAMPLE_DIR = picture
 VIDEO_NAME = video.mp4
 
-CPROG += \
-writeimage \
-readimage
-
-CSRC += \
-writeimage.c \
-readimage.c
-
 
 COMPMODE ?= P1
 
 
-.PHONY: prog1 prog2 prog_dyn prog_static play_video create_video clean
+.PHONY: header obj static dynamic play_video create_video clean
 
-prog1: writeimage readimage
+header:
+	@$(MAKE) --no-print-directory MODE=P1 writeimage readimage
 
-prog2: writeimage readimage | libImagefile.o
+obj:
+	@$(MAKE) --no-print-directory MODE=P2 writeimage readimage
 
-prog_dyn: writeimage readimage | libImagefile.so
+dynamic:
+	@$(MAKE) --no-print-directory MODE=PD writeimage readimage
 
-prog_static: writeimage readimage | libImagefile.a
+static:
+	@$(MAKE) --no-print-directory MODE=PS writeimage readimage
+
 
 
 libImagefile.o: libImagefile.h
-	$(CC) -DLIBIMAGEFILE_IMPLEMENTATION -x c -c libImagefile.h
+	$(CC) -DLIBIMAGEFILE_IMPLEMENTATION -x c -c $<
 
 libImagefile.so: Imagefile.c
-	$(CC) $(CFLAGS) -DPROG3 -fPIC -shared -o libImagefile.so Imagefile.c
-
-libImagefile.a: Imagefile.c
-	$(CC) $(CFLAGS) -c Imagefile.c
-	ar -cvq libImagefile.a Imagefile.o
-	@ar -t libImagefile.a
+	$(CC) $(CFLAGS) -DPROG3 -fPIC -shared -o $@ $<
 
 
+libImagefile.a: Imagefile.o
+	ar -cvq $@ $<
+	@ar -t $@
+
+Imagefile.o: Imagefile.c
+	$(CC) $(CFLAGS) -c $<
+
+
+ifeq ($(MODE), P1)
 writeimage: writeimage.c
-ifeq ($(COMPMODE), P1)
 	@echo Simple compilation of programs
-	$(CC) writeimage.c -o writeimage -DPROG1 $(CFLAGS)
-else ifeq ($(COMPMODE), P2)
+	$(CC) $< -o $@ -DPROG1 $(CFLAGS)
+else ifeq ($(MODE), P2)
+writeimage: writeimage.c libImagefile.o
 	@echo Compile with obj lib
-	$(CC) writeimage.c libImagefile.o -o writeimage -DPROG2 $(CFLAGS)
-else ifeq ($(COMPMODE), PD)
+	$(CC) $< libImagefile.o -o $@ -DPROG2 $(CFLAGS)
+else ifeq ($(MODE), PD)
+writeimage: writeimage.c libImagefile.so
 	@echo Compile the dynamique library
-	$(CC) writeimage.c -o writeimage -DPROG3 $(CFLAGS) -L. -lImagefile -Wl,-rpath=./
-else ifeq ($(COMPMODE), PS)
+	$(CC) $< -o $@ -DPROG3 $(CFLAGS) -L. -lImagefile -Wl,-rpath=./
+else ifeq ($(MODE), PS)
+writeimage: writeimage.c libImagefile.a
 	@echo Compile the static library
-	$(CC) writeimage.c -o writeimage -L. -lImagefile -DPROG4 $(CFLAGS)
+	$(CC) $< -o $@ -L. -lImagefile -DPROG4 $(CFLAGS)
 else
 	@echo ERROR
 endif
 
+ifeq ($(MODE), P1)
 readimage: readimage.c
-ifeq ($(COMPMODE), P1)
 	@echo Simple compilation of programs
-	$(CC) readimage.c -o readimage -DPROG1 $(CFLAGS)
-else ifeq ($(COMPMODE), P2)
+	$(CC) $< -o $@ -DPROG1 $(CFLAGS)
+else ifeq ($(MODE), P2)
+readimage: readimage.c
 	@echo Compile with obj lib
-	$(CC) readimage.c libImagefile.o -o readimage -DPROG2 $(CFLAGS)
-else ifeq ($(COMPMODE), PD)
+	$(CC) $< libImagefile.o -o $@ -DPROG2 $(CFLAGS)
+else ifeq ($(MODE), PD)
+readimage: readimage.c
 	@echo Compile the dynamique library
-	$(CC) readimage.c -o readimage -DPROG3 $(CFLAGS) -L. -lImagefile -Wl,-rpath=./
-else ifeq ($(COMPMODE), PS)
+	$(CC) $< -o $@ -DPROG3 $(CFLAGS) -L. -lImagefile -Wl,-rpath=./
+else ifeq ($(MODE), PS)
+readimage: readimage.c
 	@echo Compile the static library
-	$(CC) readimage.c -o readimage -L. -lImagefile -DPROG4 $(CFLAGS)
+	$(CC) $< -o $@ -L. -lImagefile -DPROG4 $(CFLAGS)
 else
 	@echo ERROR
 endif
-
-
 
 
 
@@ -112,6 +116,6 @@ clean:
 	$(RM) *.a
 	$(RM) *.so
 	$(RM) *.mp4
-	$(RM) writeimage
 	$(RM) readimage
+	$(RM) writeimage
 	$(RM) $(PICT_DIR)/*
