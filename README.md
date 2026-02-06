@@ -31,7 +31,7 @@ $ ffmpeg -i test_%02d.ppm -r 60 test.mp4
 $ make create_video
 ```
 
-> To play the video in while :
+> To play the video in loop :
 
 ```console
 $ mpv test.mp4 --loop-file=yes
