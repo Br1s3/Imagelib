@@ -56,21 +56,5 @@ int main()
     const char path[] = "stock/RGBAdditiveCircle8b.ppm";
     ImageSample8b(path, WIDTH, HEIGHT);
  
-    int Width;
-    int Height;
-    int nb_c;
-
-    uint8_t ***color = ReadImage(path, &Width, &Height, &nb_c);
-    if (color == NULL) exit(1);
-    for (int i = 0; i < Height; i++) {
-	for (int j = 0; j < Width; j++) {
-	    for (int c = 0; c < nb_c; c++) {
-		printf("%c ", palette[color[i][j][c]/(sizeof(palette))]);
-		// printf("%03d ", color[i][j][c]);
-	    }
-	}
-	printf("\n");
-    }
-
     return 0;
 }

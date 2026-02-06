@@ -1,22 +1,22 @@
 # Imagelib
 
-Short and simple static/shared library to create image
+Short and simple static/shared library to create and read images
 
 ## Ready to start
 
 ```console
-$ make prog1
-$ ./main
-$ make prog2
-$ ./main
-$ make prog_static
-$ ./main
-$ make prog_dyn
-$ ./main
+$ make header
+$ ./WriteMovingCheckerImage
+$ ./WriteRGBAdditiveCircle24bImage
+$ ./WriteRGBAdditiveCircle8bImage
+$ ./WriteWhiteNoiseImage
+$ ./ReadImage
+$ ./ConsImage
+$ ./ConsAnimation
+$ make clean
 ```
 
-The main.c program is just an exemple of use. It can create 60 images in either BMP or PPM format
-
+All the Write...Image programs are exemples of uses. the MovingChecker and WhiteNoise programs can create 60 images in either BMP or PPM format that can be read and visualized with ConsAnimation. This lib can create 8b or 24b either in BMP or PPM format but can only read PPM file format 
 
 ## Usefull command :
 
@@ -45,4 +45,22 @@ $ make play_video
 
 ## Example:
 
-[![Example](./picture/example.gif)](/picture)
+```console
+$ WriteMovingCheckerImage 1
+```
+[![Moving Checker](./picture/example.gif)](/picture)
+
+```console
+$ WriteRGBAdditiveCircle8bImage
+$ ./ConsImage stock/RGBAdditiveCircle8b.ppm
+```
+
+[![Console visualisation of 8bits image](./picture/ConsRGBAdditiveCircle8b.png)](/picture)
+
+```console
+$ ./WriteRGBAdditiveCircle24bImage
+$ ./ConsImage stock/RGBAdditiveCircle24b.ppm
+```
+
+[![Console visualisation of 24bits image](./picture/ConsRGBAdditiveCircle24b.png)](/picture)
+
