@@ -61,7 +61,7 @@ $ ./ConsImage stock/RGBAdditiveCircle8b.ppm
 $ ./WriteRGBAdditiveCircle24bImage
 ```
 
-[![Visualisation of 24bits image](./picture/RGBAdditiveCircle24b.ppm)](/picture)
+[![Visualisation of 24bits image](./picture/RGBAdditiveCircle24b.png)](/picture)
 
 ```console
 $ ./ConsImage stock/RGBAdditiveCircle24b.ppm
