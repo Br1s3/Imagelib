@@ -52,6 +52,11 @@ $ WriteMovingCheckerImage 1
 
 ```console
 $ WriteRGBAdditiveCircle8bImage
+```
+
+[![Visualisation of 8bits image](./picture/RGBAdditiveCircle8b.png)](/picture)
+
+```console
 $ ./ConsImage stock/RGBAdditiveCircle8b.ppm
 ```
 
