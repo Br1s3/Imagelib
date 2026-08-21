@@ -1,10 +1,8 @@
 #ifndef IMAGEFILE_INCLUED_H
 #define IMAGEFILE_INCLUED_H
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-// #include <string.h>
-#include "libImagefile.h"
+#include <stdint.h> // Used for: uint8_t, uint16, uint32_t
+#include <stdio.h>  // Used for: fprintf(), fscanf(), fputc(), fclose()
+#include <stdlib.h> // Used for: malloc(), free(), exit()
 
 
 uint8_t ***b24_color_alloc(int w, int h);
@@ -79,9 +77,7 @@ void CreateImagePPM24b(const char *nFile, uint8_t ***color, uint32_t Width, uint
 	exit(1);
     }
     
-    fprintf(f, "P6\n");
-    fprintf(f, "%d %d\n", Width, Height);
-    fprintf(f, "255\n");
+    fprintf(f, "P6\n%u %u\n255\n", Width, Height);
 
     for (uint32_t y = 0; y < Height; y++) {
 	for (uint32_t x = 0; x < Width; x++) {
@@ -203,11 +199,8 @@ void CreateImagePPM8b(const char *nFile, uint8_t ***color, uint32_t Width, uint3
 	fprintf(stderr, "ERROR: could not open file %s: %m\n", nFile);
 	exit(1);
     }
-    
-    fprintf(f, "P5\n");
-    fprintf(f, "%d %d\n", Width, Height);
-    fprintf(f, "255\n");
 
+    fprintf(f, "P5\n%u %u\n255\n", Width, Height);
     for (uint32_t y = 0; y < Height; y++) {
 	for (uint32_t x = 0; x < Width; x++) {
 	    fputc(color[y][x][0], f);
@@ -240,7 +233,7 @@ uint8_t ***ReadImage(const char *path, int *w, int *h, int *nb_color)
     char canva[3];
     fscanf(f, "%s\n", canva);
     // Debug
-    // printf("sig: P%d\nsize: %d %d\ncanva: %s\n", signature, f_width, f_height, canva);
+    // fprintf(stdout, "sig: P%d\nsize: %d %d\ncanva: %s\n", signature, f_width, f_height, canva);
 
     (*w) = f_width;
     (*h) = f_height;
@@ -275,3 +268,8 @@ uint8_t ***ReadImage(const char *path, int *w, int *h, int *nb_color)
 
 # endif // LIBIMAGEFILE_IMPLEMENTATION
 #endif // IMAGEFILE_INCLUED_H
+
+/****
+* TODO:
+* - Take a look: https://gist.github.com/JBlond/2fea43a3049b38287e5e9cefc87b2124
+ ****/

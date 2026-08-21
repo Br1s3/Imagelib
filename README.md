@@ -74,3 +74,6 @@ $ ./ConsImage stock/RGBAdditiveCircle24b.ppm
 
 [![Console visualisation of 24bits image](./picture/ConsRGBAdditiveCircle24b.png)](/picture)
 
+
+## TODO:
+- In BMP format replace fprint... by writev & fix the bug to make emacs interprate a bmp file

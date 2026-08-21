@@ -1,13 +1,16 @@
 CC = gcc
+
 RM = rm -rf
+
 MD = mkdir -p
+
 EXEC +=				\
-ReadImage			\
 ConsImage			\
 WriteRGBAdditiveCircle24bImage	\
 WriteWhiteNoiseImage		\
 WriteMovingCheckerImage		\
-WriteRGBAdditiveCircle8bImage \
+WriteRGBAdditiveCircle8bImage 	\
+ReadImage			\
 ConsAnimation
 
 CFLAGS +=	\
@@ -15,15 +18,17 @@ CFLAGS +=	\
 -Wall   	\
 
 
-PICT_DIR = stock
-PICT_SAMPLE = output_000.ppm
-PICT_NAME = output
-EXAMPLE_DIR = picture
-VIDEO_NAME = video.mp4
+PICT_DIR 	= stock
+PICT_SAMPLE 	= output_000.ppm
+PICT_NAME 	= output
+EXAMPLE_DIR 	= picture
+VIDEO_NAME 	= video.mp4
 
 
 COMPMODE ?= P1
 
+$(BUILD_DIR):
+	$(MD) $(BUILD_DIR)
 
 .PHONY: header obj static dynamic play_video create_video clean
 
@@ -39,7 +44,8 @@ dynamic:
 static:
 	@$(MAKE) --no-print-directory MODE=PS all
 
-.PHONY: all
+.PHONY: header obj dynamic static
+
 all: $(EXEC)
 
 libImagefile.o: libImagefile.h
